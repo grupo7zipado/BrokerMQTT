@@ -1,19 +1,9 @@
-// O ESP envia uma request para o broker solicitando registro/autenticação.
-// O broker verifica se o ESP já está registrado no banco.
-// Caso não exista, o broker cria um usuário para o ESP.
-// Gera credenciais criptografadas (chave/token) para autenticação futura.
-// Envia essas credenciais ao ESP e salva no banco.
-// O status do ESP é atualizado com base na última comunicação (last_update).
-// Logs de atividade podem ser mantidos para rastrear conexões/erros.
-// A tabela esp_status pode ser simplificada com espid, status, last_update.
-// Segurança extra pode ser implementada para evitar cadastros de ESPs não autorizados.
-// O sistema é escalável e permite integração futura com outras funcionalidades.
-
-
-
 
 const aedes = require('aedes')();
 const net = require('net');
+
+const db = require("./db.js")
+
 
 // Porta do broker MQTT
 const PORT = 1883;
@@ -46,8 +36,25 @@ aedes.on('client', (client) => {
     if (client) {
       console.log(`Mensagem recebida de ${client.id}: ${packet.payload.toString()}`);
     }
-  
-  
+    try {
+      const json = JSON.parse(packet.payload.toString());
+      console.log('Dados JSON:', json);
+      const query = async() =>{
+        try {
+          const data = [client.id, json.tipo, json.valor, json.time]
+          console.log(data);
+          const sql = "INSERT INTO informacoes(esp_id, inf_tipo, inf_valor, inf_generate_time) VALUES (?, ?, ?, ?)"
+          const res = await db.query(sql, data);
+          console.log(res);
+          
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      const res = query()
+    } catch (error) {
+      console.error('Erro ao converter para JSON:', error.message);
+    }
   });
   
   // Evento de inscrição em tópicos
