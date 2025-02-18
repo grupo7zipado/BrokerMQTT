@@ -41,9 +41,11 @@ aedes.on('client', (client) => {
       console.log('Dados JSON:', json);
       const query = async() =>{
         try {
-          const data = [client.id, json.tipo, json.valor, json.time]
+          //const data = [client.id, json.tipo, json.valor, new Date(Date.now()).toISOString().slice(0, 19).replace("T", " ") /*json.generate*/]
+          const data = [ client.id, json.temperatura, json.bpm, json.oxigenacao, new Date(Date.now()).toISOString().slice(0, 19).replace("T", " ")]
           console.log(data);
-          const sql = "INSERT INTO informacoes(esp_id, inf_tipo, inf_valor, inf_generate_time) VALUES (?, ?, ?, ?)"
+          const sql = "INSERT INTO teste( esp_id, inf_temperatuda, inf_bpm, inf_oxigenação, inf_generate_time) VALUES ( ?, ?, ?, ?, ? )"
+          //const sql = "INSERT INTO informacoes(esp_id, inf_tipo, inf_valor, inf_generate_time) VALUES (?, ?, ?, ?)"
           const res = await db.query(sql, data);
           console.log(res);
           
@@ -55,6 +57,25 @@ aedes.on('client', (client) => {
     } catch (error) {
       console.error('Erro ao converter para JSON:', error.message);
     }
+
+    // try {
+    //   if (client) {
+    //     console.log(`Mensagem recebida de ${client.id}: ${packet.payload.toString()}`);
+    //   }
+    //   const fetchdata = async()=>{
+    //     const timestamp = new Date(Date.now()).toISOString().slice(0, 19).replace("T", " ");
+    //     console.log(timestamp); // Exemplo: '2025-02-17 14:29:22'
+    //     const data =  [ 1,1 , 10, timestamp]
+    //     const sql = "INSERT INTO informacoes( esp_id, inf_tipo, inf_valor, inf_generate_time) VALUES (?, ?, ?, ?)";
+    //     const res = await db.query(sql, data);
+    //     console.log(res);
+    //   }
+    //   const res =  fetchdata()
+    //   console.log("a");
+      
+    //   } catch (error) {
+    //     console.error('Erro ao converter para JSON:', error.message);
+    //   }
   });
   
   // Evento de inscrição em tópicos
