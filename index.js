@@ -2,7 +2,8 @@
 const aedes = require('aedes')();
 const net = require('net');
 
-const db = require("./db.js")
+const db = require("./db.js");
+const { log } = require('console');
 
 
 // Porta do broker MQTT
@@ -37,23 +38,43 @@ aedes.on('client', (client) => {
       console.log(`Mensagem recebida de ${client.id}: ${packet.payload.toString()}`);
     }
     try {
-      const json = JSON.parse(packet.payload.toString());
-      console.log('Dados JSON:', json);
-      const query = async() =>{
-        try {
-          //const data = [client.id, json.tipo, json.valor, new Date(Date.now()).toISOString().slice(0, 19).replace("T", " ") /*json.generate*/]
-          const data = [ client.id, json.temperatura, json.bpm, json.oxigenacao, new Date(Date.now()).toISOString().slice(0, 19).replace("T", " ")]
-          console.log(data);
-          const sql = "INSERT INTO teste( esp_id, inf_temperatuda, inf_bpm, inf_oxigenação, inf_generate_time) VALUES ( ?, ?, ?, ?, ? )"
-          //const sql = "INSERT INTO informacoes(esp_id, inf_tipo, inf_valor, inf_generate_time) VALUES (?, ?, ?, ?)"
-          const res = await db.query(sql, data);
-          console.log(res);
+      
+      let jsonString = message.toString();
+
+      jsonString = jsonString
+      .replace(/'/g, '"') // Substituir aspas simples por duplas
+      .replace('oxigenação', 'oxigenacao') // Corrigir o nome da chave
+      .replace(/(\w+):/g, '"$1":'); // Colocar aspas ao redor de chaves (se necessário)
+      // Corrigir chave "oxigenação" para "oxigenacao"
+      jsonString = jsonString.replace('oxigenação', 'oxigenacao');
+
+      // Converter para JSON
+      const data = JSON.parse(jsonString);
+      
+      console.log(data);
+      
+      
+      // console.log(packet.payload.toString());
+      
+
+
+      // const json = JSON.parse(packet.payload.toString());
+      // console.log('Dados JSON:', json);
+      // const query = async() =>{
+      //   try {
+      //     //const data = [client.id, json.tipo, json.valor, new Date(Date.now()).toISOString().slice(0, 19).replace("T", " ") /*json.generate*/]
+      //     const data = [ client.id, json.temperatura, json.bpm, json.oxigenacao, json.date]
+      //     console.log(data);
+      //     const sql = "INSERT INTO teste( esp_id, inf_temperatuda, inf_bpm, inf_oxigenação, inf_generate_time) VALUES ( ?, ?, ?, ?, ? )"
+      //     //const sql = "INSERT INTO informacoes(esp_id, inf_tipo, inf_valor, inf_generate_time) VALUES (?, ?, ?, ?)"
+      //     const res = await db.query(sql, data);
+      //     console.log(res);
           
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      const res = query()
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // }
+      // const res = query()
     } catch (error) {
       console.error('Erro ao converter para JSON:', error.message);
     }
