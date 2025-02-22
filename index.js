@@ -40,9 +40,10 @@ aedes.on('client', (client) => {
           throw new Error("Erro de client e payload");        
         const data = JSON.parse(packet.payload.toString());
         if(!(data || data.dados_tipo || data.dados_valor || data.dados_generate ))
-          throw "error";
+          throw new Error("Dado Invalido");
         const sql = "INSERT INTO dados( esp_id, dados_tipo, dados_valor, dados_generate ) VALUES ( ?, ?, ?, ?);"
         console.log(data);
+        
       } catch (error) {
         console.log(error);
       }
