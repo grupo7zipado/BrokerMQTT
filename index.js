@@ -3,7 +3,7 @@ const aedes = require('aedes')();
 const net = require('net');
 
 const db = require("./db.js");
-const { log } = require('console');
+const { log, error } = require('console');
 
 
 // Porta do broker MQTT
@@ -35,8 +35,21 @@ aedes.on('client', (client) => {
   // Evento de publicação de mensagens
   aedes.on('publish', async (packet, client) => {
     if (client) {
-      console.log(`Mensagem recebida de ${client.id}: ${packet.payload.toString()}`);
       try {
+        if(!(client.id || packet.payload))
+          throw new Error("Erro de client e payload");        
+        const data = JSON.parse(packet.payload.toString());
+        if(!(data || data.dados_tipo || data.dados_valor || data.dados_generate ))
+          throw "error";
+        const sql = "INSERT INTO dados( esp_id, dados_tipo, dados_valor, dados_generate ) VALUES ( ?, ?, ?, ?);"
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+        /*
+      console.log(`Mensagem recebida de ${client.id}: ${packet.payload.toString()}`);
+          try {
       
         let jsonString = packet.payload.toString();
         // Converter para JSON
@@ -49,8 +62,8 @@ aedes.on('client', (client) => {
       } catch (error) {
         console.error('Erro ao converter para JSON:', error.message);
       }
-    }
 
+        */
         // console.log(packet.payload.toString());
         
   
