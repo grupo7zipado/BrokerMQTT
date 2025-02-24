@@ -14,40 +14,59 @@ const server = net.createServer(aedes.handle);
 
 // Evento de conexão no broker
 aedes.on('client', (client) => {
-    
-    
-    
-    console.log(`Cliente conectado: ${client.id}`);
-
-
+  console.log(`Cliente conectado: ${client.id}`);
 });
   
 
 
 
-  // Evento de desconexão
-  aedes.on('clientDisconnect', (client) => {
-    console.log(`Cliente desconectado: ${client.id}`);
-  
-  
-  });
-  
-  // Evento de publicação de mensagens
-  aedes.on('publish', async (packet, client) => {
-    if (client) {
-      try {
-        if(!(client.id || packet.payload))
-          throw new Error("Erro de client e payload");        
-        const data = JSON.parse(packet.payload.toString());
-        if(!(data || data.dados_tipo || data.dados_valor || data.dados_generate ))
-          throw new Error("Dado Invalido");
-        const sql = "INSERT INTO dados( esp_id, dados_tipo, dados_valor, dados_generate ) VALUES ( ?, ?, ?, ?);"
-        console.log(data);
-        
-      } catch (error) {
-        console.log(error);
-      }
+// Evento de desconexão
+aedes.on('clientDisconnect', (client) => {
+  console.log(`Cliente desconectado: ${client.id}`);
+});
+
+const topicosPermitidos = ['temperatura', 'oxigenacao', 'bpm'];
+
+aedes.authorizePublish = (client, packet, callback) => {
+    if (!topicosPermitidos.includes(packet.topic)) {
+        console.log(`❌ Cliente ${client.id} NÃO pode publicar no tópico ${packet.topic}`);
+        return callback(new Error('Publicação não permitida neste tópico'));
     }
+    console.log(`✅ Cliente ${client.id} publicou em ${packet.topic}`);
+    callback(null); // Permite a publicação
+};
+// Evento de publicação de mensagens
+aedes.on('publish', async (packet, client) => {
+  if (client) {
+    try {
+      if(!(client.id && packet.payload))
+      {
+        throw new Error("Erro de client e payload");        
+      }
+      const topicosPermitidos = ['temperatura', 'oxigenacao', 'bpm'];
+      // 🔹 Verifica se o tópico está na lista
+      if (!topicosPermitidos.includes(packet.topic)) {
+          console.log(`Tópico "${packet.topic}" não permitido. Mensagem ignorada.`);
+          return;
+      }
+
+
+
+      const data = JSON.parse(packet.payload.toString());
+      if(!(data && data.dados_tipo && data.dados_valor && data.dados_generate ))
+      {
+        throw new Error("Dado Invalido");
+      }
+      const sql = "INSERT INTO dados( esp_id, dados_tipo, dados_valor, dados_generate ) VALUES ( ?, ?, ?, ?);"
+      const dados = [ 1, data.dados_tipo, data.dados_valor, data.dados_generate]
+      const res = await db.query( sql, dados)
+      console.log(res);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
         /*
       console.log(`Mensagem recebida de ${client.id}: ${packet.payload.toString()}`);
           try {
@@ -112,13 +131,11 @@ aedes.on('client', (client) => {
 
 
    
-  });
+ 
   
   // Evento de inscrição em tópicos
   aedes.on('subscribe', (subscriptions, client) => {
     console.log(`Cliente ${client.id} se inscreveu no tópico: ${subscriptions.map(s => s.topic).join(', ')}`);
-  
-  
   });
   
   // Inicia o servidor

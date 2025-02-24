@@ -11,18 +11,18 @@
 
 
 --Vantagens registro unitario dos dados 
-DROP DATABASE IF EXISTS dados;
+DROP TABLE IF EXISTS dados;
 CREATE TABLE dados(
     dados_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     esp_id INT NOT NULL,
-    dados_tipo ENUM("temp", "oxig", "bpm") NOT NULL,
+    dados_tipo ENUM("temperatura", "oxigenacao", "bpm") NOT NULL,
     dados_valor SMALLINT NOT NULL,
     dados_generate TIMESTAMP NOT NULL,
     dados_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 --Vantagens preguiça
-DROP DATABASE IF EXISTS dados;
+DROP TABLE IF EXISTS dados;
 CREATE TABLE dados(
     dados_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     esp_id INT NOT NULL,
