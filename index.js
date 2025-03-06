@@ -1,14 +1,15 @@
 // IMPROTS
 const aedes = require('aedes')();
 const net = require('net');
-
+const ws = require("ws");
+const http = require("http");
 //CONEXÃO COM BANCO
 const db = require("./db.js");
 
 
 // Porta do broker MQTT
 const PORT = 1883;
-
+const WS_PORT = 9001;
 // Cria o servidor MQTT
 const server = net.createServer(aedes.handle);
 
@@ -26,17 +27,17 @@ aedes.on('clientDisconnect', (client) => {
 });
 
 // 🔹 Lista de tópicos permitidos
-const topicosPermitidos = ['temperatura', 'oxigenacao', 'bpm'];
+// const topicosPermitidos = ['temperatura', 'oxigenacao', 'bpm'];
 
-aedes.authorizePublish = (client, packet, callback) => {
-    if (!topicosPermitidos.includes(packet.topic)) {
-        console.log(`❌ Bloqueado: Cliente ${client ? client.id : 'desconhecido'} tentou publicar em "${packet.topic}"`);
-        return callback(new Error('Publicação não permitida neste tópico'));
-    }
+// aedes.authorizePublish = (client, packet, callback) => {
+//     if (!topicosPermitidos.includes(packet.topic)) {
+//         console.log(`❌ Bloqueado: Cliente ${client ? client.id : 'desconhecido'} tentou publicar em "${packet.topic}"`);
+//         return callback(new Error('Publicação não permitida neste tópico'));
+//     }
 
-    console.log(`✅ Permitido: Cliente ${client ? client.id : 'desconhecido'} publicou em "${packet.topic}"`);
-    callback(null); // Permite a publicação
-};
+//     console.log(`✅ Permitido: Cliente ${client ? client.id : 'desconhecido'} publicou em "${packet.topic}"`);
+//     callback(null); // Permite a publicação
+// };
 
 aedes.on('publish', async (packet, client) => {
     if (client) {
@@ -120,4 +121,31 @@ aedes.on('subscribe', (subscriptions, client) => {
 // Inicia o servidor
 server.listen(PORT, () => {
   console.log(`Broker MQTT rodando na porta ${PORT}`);
+});
+
+
+
+
+// Servidor HTTP + WebSockets para MQTT
+const httpServer = http.createServer();
+const wss = new ws.Server({ server: httpServer });
+
+wss.on("connection", (ws) => {
+  const stream = require("stream");
+  const duplex = new stream.Duplex({
+    read(size) {},
+    write(chunk, encoding, callback) {
+      ws.send(chunk, encoding, callback);
+    },
+  });
+
+  duplex.on("data", (data) => ws.send(data));
+  ws.on("message", (msg) => duplex.push(msg));
+  ws.on("close", () => duplex.push(null));
+
+  aedes.handle(duplex);
+});
+
+httpServer.listen(WS_PORT, () => {
+  console.log(`Broker MQTT WebSocket rodando na porta ${WS_PORT}`);
 });
