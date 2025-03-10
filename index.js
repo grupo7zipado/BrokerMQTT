@@ -1,7 +1,11 @@
 // IMPROTS
+// BROKER MQTT
 const aedes = require('aedes')();
+// CRIA AS PORTAS DE ACESSO 
 const net = require('net');
+// CRIA O SERVIÇO WS
 const ws = require("ws");
+// CRIA O SERVIÇÇO HTTP
 const http = require("http");
 //CONEXÃO COM BANCO
 const db = require("./db.js");
