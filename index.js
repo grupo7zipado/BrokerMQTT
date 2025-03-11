@@ -52,13 +52,13 @@ aedes.on('publish', async (packet, client) => {
 
             const data = JSON.parse(packet.payload.toString());
 
-            if (!(data && data.esp_id && data.dados_tipo && data.dados_valor && data.dados_generate)) {
+            if (!(data && data.use_id && data.dados_tipo && data.dados_valor && data.dados_generate)) {
                 throw new Error('Dado Inválido');
             }
 
             // 🔹 Insere os dados no banco
-            const sql = "INSERT INTO dados (esp_id, dados_tipo, dados_valor, dados_generate) VALUES (?, ?, ?, ?);";
-            const dados = [data.esp_id, data.dados_tipo, data.dados_valor, data.dados_generate];
+            const sql = "INSERT INTO dados (use_id, dados_tipo, dados_valor, dados_generate) VALUES (?, ?, ?, ?);";
+            const dados = [data.use_id, data.dados_tipo, data.dados_valor, data.dados_generate];
 
             const res = await db.query(sql, dados);
             console.log(`✅ Dado inserido no banco: ${res}`);
