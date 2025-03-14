@@ -11,6 +11,7 @@ const config = {
 }
 
 let connection;
+console.log(connection);
 
 try {
     connection = mysql.createPool(config)
