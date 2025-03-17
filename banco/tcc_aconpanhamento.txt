@@ -1,0 +1,63 @@
+Link - https://forms.office.com/pages/responsepage.aspx?id=bEY47UG2fUOa6dgBuCn6lKr9msm-_t5NhnvXL6N0eLJUNE00RFRMVjc2NzlUM1BJWUdNSTFQWERaTC4u&route=shorturl
+
+
+IoT - 
+Tamanho Grande
+{
+
+}
+
+Documentação -
+Tamanho Grande
+{
+
+}
+
+Servidor - 20%
+Tamanho Pequeno
+{
+	Definição dos Serviços(Node.js e MySQL) - OK - 10 min
+	Criação da VM Linux - Falta
+	Instalação do Serviços - Falta
+	Inicialização Automatica do Serviços - Falta
+	Configuração de Portas - Falta
+}
+
+Broker MQTT - 40% 
+Tamanho Médio
+{
+	Criação do Broker MQTT - OK - 30 min
+	Cadastro das Informações no Banco de Dados - OK - 2 h
+	WebSocket para Acompanhamento na Web - OK - 30 min
+	Conexão com IoT - Falta
+	Autentificação do IoT - Falta
+}
+
+Banco de Dados - 60%
+Tamanho Pequeno
+{
+	Criação do MER  - OK - 1 h
+	Criação do Reset  - OK 20 min
+	Revisão Geral  - OK - 30 min
+	Revisão da Tabela esp para Validações de esp - Falta
+	Criação de Usuários - Falta
+}
+
+API - 40%
+Tamanho Médio
+{
+	Criação do Select Hard - OK - 2 h
+	Manipulação dos Dados - + -
+	Manipulação dos Usuarios - OK 30 min
+	Manipulação dos Esp - Falta
+	Manipulação do Relacionamento Usuário<>Esp - Falta 
+	Revisão Geral - Falta 
+}
+
+React - 
+Tamanho Grande
+{
+
+}
+
+Total - 
