@@ -140,3 +140,42 @@ WHERE esu.use_id = (
     WHERE t.usu_id = esu.usu_id
 )
 GROUP BY usu.usu_id;
+
+
+
+
+
+
+
+SELECT 
+    -- talvez não precisa trazer por prop
+    -- usu_id, 
+    -- esu.use_id, 
+    -- esp_id, 
+    -- use_status,
+    -- trazer 100%
+    dados_id, 
+    dados_tipo, 
+    dados_valor, 
+    dados_generate
+FROM 
+    usuariosEsp esu
+INNER JOIN 
+    dados dad 
+ON 
+    esu.use_id = dad.use_id
+WHERE 
+    -- pega o ultimo relacionamento esp <> usuario
+    esu.use_id = ( 
+        SELECT 
+            MAX(use_id) 
+        FROM 
+            usuariosEsp t
+        WHERE 
+            t.usu_id = esu.usu_id
+    )
+-- fitrar pro id
+AND 
+    usu_id = 1
+ORDER BY dados_generate DESC
+;
