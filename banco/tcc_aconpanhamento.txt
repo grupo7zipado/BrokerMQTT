@@ -55,20 +55,21 @@ Tamanho Pequeno
 	Criação de Usuários - Falta
 }
 
-API - 40%
+API - 80%
 Tamanho Médio
 {
 	Criação do Select Hard - OK - 2 h
-	Manipulação dos Dados - + -
-	Manipulação dos Usuarios - OK 30 min
-	Manipulação dos Esp - Falta
-	Manipulação do Relacionamento Usuário<>Esp - Falta 
+	Manipulação dos Dados - Ok - 1h
+	Manipulação dos Usuarios - OK - 30 min
+	Manipulação dos Esp - Ok - 20 min
+	Manipulação do Relacionamento Usuário<>Esp - Ok - 20 min 
 	Revisão Geral - Falta 
 }
 
 React -  40%
 Tamanho Grande
-{
+{	
+	design web - feito - 1h
 	criação e estilização dos cards - feito - 1h30min
 	criação e estilização do gráfico - incompleto - 20 min
 	criação e estilização dos logs - incompleto 10 min
@@ -79,4 +80,4 @@ Tamanho Grande
 	scripts para funcionamento da página - falta
 }
 
-Total - 35%
+Total - 40%
