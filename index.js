@@ -58,7 +58,7 @@ aedes.on('publish', async (packet, client) => {
 
             // 🔹 Insere os dados no banco
             const sql = "INSERT INTO dados (use_id, dados_tipo, dados_valor, dados_generate) VALUES (?, ?, ?, ?);";
-            const dados = [data.use_id, data.dados_tipo, data.dados_valor, data.dados_generate];
+            const dados = [data.use_id, data.dados_tipo, data.dados_valor, new Date( data.dados_generate)];
 
             const res = await db.query(sql, dados);
             console.log(`✅ Dado inserido no banco: ${res}`);
