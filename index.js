@@ -45,6 +45,8 @@ aedes.on('clientDisconnect', (client) => {
 
 aedes.on('publish', async (packet, client) => {
     if (client) {
+      console.log(packet.payload.toString());
+      
         try {
             if (!(client.id && packet.payload)) {
                 throw new Error('Erro de client e payload');
@@ -58,8 +60,9 @@ aedes.on('publish', async (packet, client) => {
 
             // 🔹 Insere os dados no banco
             const sql = "INSERT INTO dados (use_id, dados_tipo, dados_valor, dados_generate) VALUES (?, ?, ?, ?);";
-            const dados = [data.use_id, data.dados_tipo, data.dados_valor, new Date( data.dados_generate)];
-
+            const dados = [data.use_id, data.dados_tipo, data.dados_valor, new Date( data.dados_generate*1000)];
+            console.log(new Date( data.dados_generate*1000));
+            
             const res = await db.query(sql, dados);
             console.log(`✅ Dado inserido no banco: ${res}`);
 
